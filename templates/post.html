@@ -1,0 +1,16 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Объявление
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим объявление, идентификатор которой был передан в url -->
+{% block content %}
+<br><br>
+<h2>{{ post.title }}</h2>
+<p>Автор: {{ post.author}}</p>
+
+<p align = "justify">{{ post.content }}</p>
+
+{% endblock content %}
