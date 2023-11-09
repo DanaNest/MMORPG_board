@@ -8,9 +8,7 @@ class PostForm(ModelForm):
         fields = [
             'category',
             'title',
-            'content2',
             'content',
-            'author'
         ]
 
 

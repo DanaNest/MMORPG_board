@@ -17,7 +17,6 @@
                <td style="border: 1px solid maroon">Заголовок</td>
                <td style="border: 1px solid maroon">Категории</td>
                <td style="border: 1px solid maroon">Описание</td>
-               <td style="border: 1px solid maroon">Описание2</td>
                 {% if perms.news.change_post or perms.news.delete_post %}
                <td style="border: 1px solid maroon">Детали</td>
                 {% endif %}
@@ -28,7 +27,6 @@
                <td style="border: 1px solid maroon; padding: 10px"><a href="{% url 'post' post.id %}">{{ post.title }}</a></td>
                <td style="border: 1px solid maroon; text-align: left; padding: 10px">{{ post.get_category_display }}</td>
                <td style="border: 1px solid maroon; text-align: left; padding: 10px">{{ post.content }}</td>
-               <td style="border: 1px solid maroon; text-align: left; padding: 10px">{{ post.content2 }}</td>
 {#           <td>#}
 {#               {% if perms.news.change_post %}#}
 {#                    <a href="{% url 'post_edit' post.id %}">Изменить | </a>#}

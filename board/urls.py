@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from board.views import PostList, PostDetail
 
 urlpatterns = [
+    path('', PostList.as_view(), name='index'),
     path('posts/', PostList.as_view(), name='posts'),
     path('posts/<int:pk>/', PostDetail.as_view(), name='post'),
   # path('post/<int:pk>', PostItem.as_view()),

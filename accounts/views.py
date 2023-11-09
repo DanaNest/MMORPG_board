@@ -1,10 +1,19 @@
-from django.contrib.auth.models import User
-from django.views.generic.edit import CreateView
-from .forms import SignUpForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from .models import UserProfile
 
 
-class SignUp(CreateView):
-    form_class = SignUpForm
-    model = User
-    success_url = '/accounts/login/'
-    template_name = 'registration/signup.html'
+def confirm_registration(request):
+    print('Подтверждение регистрации')
+    if request.method == 'POST':
+        confirmation_code = request.POST.get('confirmation_code')
+        user_profile = UserProfile.objects.get(confirmation_code=confirmation_code)
+        user = user_profile.user
+        user.is_active = True  # Активируем пользователя
+        user_profile.save()
+        user.save()
+        print(f'Пользователь успешно активирован {user}')
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return redirect('posts')
+    print(f'Пользователь не активирован {request.user}')
+    return render(request, 'registration/confirm_registration.html')

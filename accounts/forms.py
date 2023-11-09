@@ -1,42 +1,46 @@
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from allauth.account.forms import SignupForm
-from django.contrib.auth.models import Group
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
+
+import random
+import string
+
+from .models import UserProfile
+
+from django_registration.forms import RegistrationForm
 
 
-class SignUpForm(UserCreationForm):
-    email = forms.EmailField(label='Email')
-    first_name = forms.CharField(label='Имя')
-    last_name = forms.CharField(label='Фамилия')
-    class Meta:
-        model = User
-        fields = (
-            'username',
-            'first_name',
-            'last_name',
-            'email',
-            'password1',
-            'password2',
-        )
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False  # Деактивируем пользователя
+            user.save()
+
+            # Генерируем и сохраняем код подтверждения
+            confirmation_code = generate_confirmation_code()
+            profile = UserProfile(user=user, confirmation_code=confirmation_code)
+            profile.save()
+
+            # Отправляем код подтверждения по электронной почте
+            send_confirmation_email(user.email, confirmation_code)
+
+            return redirect('activation')
+    else:
+        form = RegistrationForm()
+    return render(request, 'registration/register.html', {'form': form})
 
 
-class CustomSignupForm(SignupForm):
-    def save(self, request):
-        user = super().save(request)
-        authors = Group.objects.get(name='authors')
-        user.groups.add(authors)
+def generate_confirmation_code():
+    characters = string.ascii_letters + string.digits
+    code = ''.join(random.choice(characters) for _ in range(10))
+    return code
 
-        subject = 'Добро пожаловать на наш новостной портал!'
-        text = f'{user.username}, вы успешно зарегистрировались на сайте!'
-        html = (
-            f'<b>{user.username}</b>, вы успешно зарегистрировались на '
-            f'<a href="http://127.0.0.1:8000/news">сайте</a>!'
-        )
-        msg = EmailMultiAlternatives(
-            subject=subject, body=text, from_email=None, to=[user.email]
-        )
-        msg.attach_alternative(html, "text/html")
-        msg.send()
-        return user
+
+def send_confirmation_email(email, confirmation_code):
+    subject = 'Подтверждение регистрации'
+    message = (f'Ваш код подтверждения: {confirmation_code}')
+    from_email = 'noreply@example.com'
+    recipient_list = [email]
+    send_mail(subject, message, from_email, recipient_list)

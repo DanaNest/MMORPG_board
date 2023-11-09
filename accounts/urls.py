@@ -1,7 +1,10 @@
+from . import views
 from django.urls import path
-from .views import SignUp
 
+
+from accounts.forms import register
 
 urlpatterns = [
-    path('signup/', SignUp.as_view(), name='signup'),
+    path('register/', register, name='register'),
+
 ]

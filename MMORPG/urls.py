@@ -19,13 +19,22 @@ from django.urls import path, include
 
 from django.conf import settings
 from django.conf.urls.static import static
+
+from accounts.forms import register
+from accounts.views import confirm_registration
 from board import views
 
 urlpatterns = [
+
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('accounts/', include('allauth.urls')),
+#    path('accounts/', include('django_registration.backends.activation.urls')),
+#    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/signup/', register, name='register'),
+    path('accounts/register/', confirm_registration, name='activation'),
+    # path('accounts/', include('allauth.urls')),
+    # path('accounts/', include('accounts.urls')),
     path('', include('board.urls')),
-    path('add/post/', views.add_post, name='add_post'),
-    path('edit/post/<int:post_id>/', views.edit_post, name='edit_post'),
+    path('posts/add/', views.add_post, name='add_post'),
+    path('posts/edit/<int:post_id>/', views.edit_post, name='edit_post'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
