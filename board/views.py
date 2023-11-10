@@ -8,7 +8,6 @@ from .models import User, Post, Reply
 
 class PostList(ListView):
     model = Post
-    # ordering = '-data_creation'
     template_name = 'posts.html'
     context_object_name = 'posts'
     ordering = '-data_creation'
@@ -43,5 +42,13 @@ def edit_post(request, post_id=None):
     return render(request, 'post_form.html', {'form': form})
 
 
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.method == 'POST':
+        post.delete()
+        return redirect('posts')
+
+    return render(request, 'confirm_delete.html', {'post': post})
 
 #Reply

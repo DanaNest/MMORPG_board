@@ -1,8 +1,13 @@
+from ckeditor.widgets import CKEditorWidget
+from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import ModelForm
+
 from .models import Post
 
 
 class PostForm(ModelForm):
+
     class Meta:
         model = Post
         fields = [
@@ -10,5 +15,15 @@ class PostForm(ModelForm):
             'title',
             'content',
         ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        content = cleaned_data.get('content')
+        title = cleaned_data.get('title')
+
+        if title == content:
+            raise ValidationError('Название и текст не должны совпадать')
+
+        return cleaned_data
 
 

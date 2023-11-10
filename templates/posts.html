@@ -17,7 +17,7 @@
                <td style="border: 1px solid maroon">Заголовок</td>
                <td style="border: 1px solid maroon">Категории</td>
                <td style="border: 1px solid maroon">Описание</td>
-                {% if perms.news.change_post or perms.news.delete_post %}
+                {% if perms.board.edit_post or perms.board.delete_post %}
                <td style="border: 1px solid maroon">Детали</td>
                 {% endif %}
            </tr>
@@ -27,14 +27,14 @@
                <td style="border: 1px solid maroon; padding: 10px"><a href="{% url 'post' post.id %}">{{ post.title }}</a></td>
                <td style="border: 1px solid maroon; text-align: left; padding: 10px">{{ post.get_category_display }}</td>
                <td style="border: 1px solid maroon; text-align: left; padding: 10px">{{ post.content }}</td>
-{#           <td>#}
-{#               {% if perms.news.change_post %}#}
-{#                    <a href="{% url 'post_edit' post.id %}">Изменить | </a>#}
-{#               {% endif %}#}
-{#               {% if perms.news.delete_post %}#}
-{#                    <a href="{% url 'post_delete' post.id %}">Удалить </a>#}
-{#               {% endif %}#}
-{#           </td>#}
+           <td>
+               {% if perms.board.edit_post %}
+                    <a href="{% url 'edit_post' post.id %}">Изменить | </a>
+               {% endif %}
+               {% if perms.board.delete_post %}
+                    <a href="{% url 'delete_post' post.id %}">Удалить </a>
+               {% endif %}
+           </td>
            </tr>
            {% endfor %}
        </table>

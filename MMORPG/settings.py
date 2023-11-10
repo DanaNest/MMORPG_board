@@ -39,13 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
+    'ckeditor',
+    'ckeditor_uploader',
     'accounts',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.yandex',
-    'ckeditor',
-    'ckeditor_uploader',
     'board',
 
 ]

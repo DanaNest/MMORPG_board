@@ -1,0 +1,20 @@
+{% extends 'default.html' %}
+
+{% block content %}
+  <h1>Отклики на ваши объявления</h1>
+
+  <h2>Профиль пользователя</h2>
+  <p>Имя пользователя: {{ user_profile.user.username }}</p>
+  <p>Код подтверждения: {{ user_profile.confirmation_code }}</p>
+
+  <h2>Отклики</h2>
+  {% if responses %}
+    <ul>
+      {% for response in responses %}
+        <li>{{ response.text }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Нет откликов на ваши объявления.</p>
+  {% endif %}
+{% endblock %}

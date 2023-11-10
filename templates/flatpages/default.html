@@ -18,23 +18,23 @@
                <a class="navbar-brand" href="/posts">Доска объявлений</a>
                <div class="collapse navbar-collapse" id="navbarResponsive">
                    <ul class="navbar-nav ml-auto">
-                   	<li class="nav-item"><a class="nav-link active" aria-current="page" href="/admin/">Admin</a></li>
-				{% if user.is_authenticated %}
-					<li class="nav-item"><a class="nav-link" href="/accounts/logout/">logout</a></li>
+				{% if request.user.is_authenticated %}
+                    <li class="nav-item" style="color: #ffffff">Привет, {{ request.user.username }}!</li>
+                    <li class="nav-item"><a class="nav-link" href="/accounts/logout/">Выход</a></li>
                 {% else %}
-					<li class="nav-item"><a class="nav-link" href="/accounts/login/">login</a></li>
+                     <li class="nav-item"><a class="nav-link" href="/accounts/login/">Пожалуйста, войдите на сайт.</a></li>
                 {% endif %}
                {% if perms.board.change_post or perms.board.delete_post %}
 					<li class="nav-item"><a class="nav-link" href="/posts/add/">add post</a>
                        </li>
-
                {% endif %}
-
                    </ul>
-
                </div>
-
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+               <a class="nav-link active"  style="color: #ffffff" aria-current="page" href="/admin/">Admin</a>
+        {% endif %}
            </div>
+
         </nav>
         <!-- Page content-->
         <div class="container">
