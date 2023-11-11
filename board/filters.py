@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
 
-from .models import Post, Reply
+from .models import Post
 
 
 class PostFilter(django_filters.FilterSet):

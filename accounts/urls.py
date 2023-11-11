@@ -3,9 +3,8 @@ from django.urls import path
 
 
 from accounts.forms import register
+from .views import confirm_registration
 
 urlpatterns = [
     path('register/', register, name='register'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
 ]

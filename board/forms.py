@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from .models import Post
+from .models import Post, Response
 
 
 class PostForm(ModelForm):
@@ -25,5 +25,12 @@ class PostForm(ModelForm):
             raise ValidationError('Название и текст не должны совпадать')
 
         return cleaned_data
+
+
+class ResponseForm(forms.ModelForm):
+    class Meta:
+        model = Response
+        fields = ['content']
+        labels = {'content': 'Содержимое отклика'}
 
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Reply
+from .models import Post, Response
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -7,8 +7,8 @@ class PostAdmin(admin.ModelAdmin):
 
 
 class ReplyAdmin(admin.ModelAdmin):
-    list_display = ['author', 'post', 'text', 'status']
+    list_display = ['author', 'post', 'content', 'status']
 
 
 admin.site.register(Post, PostAdmin)
-admin.site.register(Reply, ReplyAdmin)
+admin.site.register(Response, ReplyAdmin)

@@ -2,7 +2,6 @@ from django.shortcuts import redirect
 from django.contrib.auth import login
 from django.shortcuts import render
 
-from board.models import Reply
 from .models import UserProfile
 
 

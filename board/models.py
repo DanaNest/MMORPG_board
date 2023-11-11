@@ -32,11 +32,11 @@ class Post(models.Model):
         super().save(*args, **kwargs)
 
 
-class Reply(models.Model):
+class Response(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='replies', verbose_name='Пост')
     data_creation = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
-    text = models.TextField(verbose_name='Текст')
+    content = models.TextField(verbose_name='Текст')
     status = models.BooleanField(default=False)
 
 

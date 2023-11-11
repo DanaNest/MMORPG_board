@@ -25,13 +25,13 @@
                      <li class="nav-item"><a class="nav-link" href="/accounts/login/">Пожалуйста, войдите на сайт.</a></li>
                 {% endif %}
                {% if perms.board.change_post or perms.board.delete_post %}
-					<li class="nav-item"><a class="nav-link" href="/posts/add/">add post</a>
+					<li class="nav-item"><a class="nav-link" href="/posts/add/">Добавить пост</a>
                        </li>
                {% endif %}
                    </ul>
                </div>
         {% if request.user.is_authenticated and request.user.is_superuser %}
-               <a class="nav-link active"  style="color: #ffffff" aria-current="page" href="/admin/">Admin</a>
+               <a class="nav-link active"  style="color: #ffffff" aria-current="page" href="/admin/">Админка</a>
         {% endif %}
            </div>
 

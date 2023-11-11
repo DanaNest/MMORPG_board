@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django_registration.forms import RegistrationForm
@@ -16,6 +17,10 @@ def register(request):          #
             user = form.save(commit=False)
             user.is_active = False  # Деактивируем пользователя
             user.save()
+
+            # Добавляем пользователю группу "авторы"
+            authors_group = Group.objects.get(name='authors')
+            user.groups.add(authors_group)
 
             # Генерируем и сохраняем код подтверждения
             confirmation_code = generate_confirmation_code()

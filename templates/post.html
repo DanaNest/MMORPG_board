@@ -13,4 +13,39 @@
 
 <p align = "justify">{{ post.content }}</p>
 
+{% if post.author != request.user %}
+<hr>
+
+<!-- Форма для отправки отклика -->
+<form method="post" action="{% url 'create_response' post_id=post.id %}">
+  {% csrf_token %}
+  <label for="content">Текст отклика:</label><br>
+  <textarea id="content" name="content"></textarea><br>
+  <button type="submit">Отправить отклик</button>
+</form>
+{% endif %}
+<hr>
+
+    <!-- Отображение откликов -->
+<h3>Отклики</h3>
+{% for response in responses %}
+  <div>
+    <p>Автор: {{ response.author }}</p>
+    <p>Время создания: {{ response.data_creation }}</p>
+    <p>Текст: {{ response.content }}</p>
+<hr>
+    {% if post.author == request.user %}
+      {% if not response.status %}
+        <form method="post" action="{% url 'accept_response' response.id %}">
+          {% csrf_token %}
+          <button type="submit">Принять отклик</button>
+        </form>
+          <hr>
+      {% endif %}
+    {% endif %}
+  </div>
+{% empty %}
+  <p>Нет откликов</p>
+{% endfor %}
+
 {% endblock content %}
