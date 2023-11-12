@@ -30,9 +30,7 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('accounts/signup/', register, name='register'),
     path('accounts/register/', confirm_registration, name='activation'),
+    path('private/', views.private_page, name='private_page'),
     path('accounts/', include('allauth.urls')),
-
-    #path('responses/<int:user_id>/', view_responses, name='view_responses'),
-
     path('', include('board.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -33,6 +33,22 @@ class PostDetail(DetailView):  # детали объявления
         return context
 
 
+@login_required
+def private_page(request):
+    # Получаем объявления пользователя
+    posts = Post.objects.filter(author=request.user)
+
+    # Получаем все отклики на объявления пользователя
+    responses = Response.objects.filter(post__in=posts)
+
+    # Получаем выбранное объявление для фильтрации
+    selected_post_id = request.GET.get('post_id')
+    if selected_post_id:
+        responses = responses.filter(post_id=selected_post_id)
+
+    return render(request, 'profile.html', {'posts': posts, 'responses': responses})
+
+
 def add_post(request):  # создать объявление
     if request.method == 'POST':
         form = PostForm(request.POST)

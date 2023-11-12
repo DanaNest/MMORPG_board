@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 
 from MMORPG import settings
 from board import views
-from board.views import PostList, PostDetail, create_response, accept_response
+from board.views import PostList, PostDetail, create_response, accept_response, private_page
 
 urlpatterns = [
     path('', PostList.as_view(), name='index'),
