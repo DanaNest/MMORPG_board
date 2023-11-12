@@ -1,15 +1,17 @@
 from django import forms
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import ListView, DetailView
 from requests import post
 
+from MMORPG.settings import DEFAULT_FROM_EMAIL
 from .forms import PostForm, ResponseForm
 from .models import Post, Response
 
 
-class PostList(ListView):                          # список объявлений
+class PostList(ListView):  # список объявлений
     model = Post
     template_name = 'posts.html'
     context_object_name = 'posts'
@@ -17,7 +19,7 @@ class PostList(ListView):                          # список объявле
     paginate_by = 10  # вывод 10 записей на страницу
 
 
-class PostDetail(DetailView):                      # детали объявления
+class PostDetail(DetailView):  # детали объявления
     model = Post
     template_name = 'post.html'
     context_object_name = 'post'
@@ -31,7 +33,7 @@ class PostDetail(DetailView):                      # детали объявле
         return context
 
 
-def add_post(request):                           # создать объявление
+def add_post(request):  # создать объявление
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
@@ -44,7 +46,7 @@ def add_post(request):                           # создать объявле
     return render(request, 'post_form.html', {'form': form})
 
 
-def edit_post(request, post_id=None):            # редактировать объявление
+def edit_post(request, post_id=None):  # редактировать объявление
     item = get_object_or_404(Post, id=post_id)
     form = PostForm(request.POST or None, instance=item)
     if form.is_valid():
@@ -53,7 +55,7 @@ def edit_post(request, post_id=None):            # редактировать о
     return render(request, 'post_form.html', {'form': form})
 
 
-def delete_post(request, post_id):              # удалить объявление
+def delete_post(request, post_id):  # удалить объявление
     post = get_object_or_404(Post, id=post_id)
 
     if request.method == 'POST':
@@ -71,13 +73,30 @@ def create_response(request, post_id):
         content = request.POST.get('content')
         response = Response(author=request.user, post=post, content=content)
         response.save()
+
+        # отправляем уведомление
+        subject = 'Новый отклик на объявление'
+        message = f'Новый отклик на ваше объявление: {post.title}'
+        from_email = DEFAULT_FROM_EMAIL
+        to_email = post.author.email
+        send_mail(subject, message, from_email, [to_email])
+
         return HttpResponseRedirect('/posts/{}'.format(post_id))
 
     return render(request, 'create_response.html', {'post': post})
+
 
 @login_required
 def accept_response(request, response_id):
     response = get_object_or_404(Response, id=response_id)
     response.status = True
     response.save()
+
+    # отправляем уведомление на почту
+    subject = 'Ваш отклик принят'
+    message = f'Ваш отклик на объявление "{response.post.title}" принят'
+    from_email = DEFAULT_FROM_EMAIL
+    to_email = response.author.email
+    send_mail(subject, message, from_email, [to_email])
+
     return redirect('post', post_id=response.post.id)

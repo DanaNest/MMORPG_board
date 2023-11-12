@@ -10,7 +10,7 @@ from MMORPG.settings import DEFAULT_FROM_EMAIL
 from .models import UserProfile
 
 
-def register(request):          #
+def register(request):  # Регистрация
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -36,15 +36,15 @@ def register(request):          #
     return render(request, 'registration/register.html', {'form': form})
 
 
-def generate_confirmation_code():    # Генерируем код подтверждения
+def generate_confirmation_code():  # Генерируем код подтверждения
     characters = string.ascii_letters + string.digits
     code = ''.join(random.choice(characters) for _ in range(10))
     return code
 
 
-def send_confirmation_email(email, confirmation_code):          #
+def send_confirmation_email(email, confirmation_code):  # Отправляем код подтверждения
     subject = 'Подтверждение регистрации'
     message = (f'Ваш код подтверждения: {confirmation_code}')
     from_email = DEFAULT_FROM_EMAIL
-    recipient_list = [email]
-    send_mail(subject, message, from_email, recipient_list)
+    to_email = [email]
+    send_mail(subject, message, from_email, to_email)

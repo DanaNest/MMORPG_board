@@ -162,11 +162,12 @@ STATIC_URL = '/static/'
 #STATIC_ROOT = '/static/'
 STATIC_DIR = os. path.join(BASE_DIR,'static')
 STATICFILES_DIRS = [STATIC_DIR]
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'media/'
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
-
+CKeDITOR_IMAGE_BACKEND = 'pillow'  # чтобы можно было загружать картинки пользователям
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',

@@ -2,50 +2,59 @@
 {% extends 'flatpages/default.html' %}
 
 {% block title %}
-Объявление
+    Объявление
 {% endblock title %}
 
 <!-- В контенте на странице мы выводим объявление, идентификатор которой был передан в url -->
 {% block content %}
-<br><br>
-<h2>{{ post.title }}</h2>
-<p>Автор: {{ post.author}}</p>
+    <br><br>
+    <h2>{{ post.title }}</h2>
+    <p>Автор: {{ post.author }}</p>
+    <p>Категория: {{ post.get_category_display }}</p>
+    <p>Время создания: {{ post.data_creation|date:'d.m.Y' }}</p>
 
-<p align = "justify">{{ post.content }}</p>
+    <p align="justify">{{ post.content }}</p>
 
-{% if post.author != request.user %}
-<hr>
+    {% if post.author != request.user %}
+        {% if request.user.is_authenticated %}
+            <hr>
 
-<!-- Форма для отправки отклика -->
-<form method="post" action="{% url 'create_response' post_id=post.id %}">
-  {% csrf_token %}
-  <label for="content">Текст отклика:</label><br>
-  <textarea id="content" name="content"></textarea><br>
-  <button type="submit">Отправить отклик</button>
-</form>
-{% endif %}
-<hr>
+            <!-- Форма для отправки отклика -->
+            <form method="post" action="{% url 'create_response' post_id=post.id %}">
+                {% csrf_token %}
+                <label for="content">Текст отклика:</label><br>
+                <textarea id="content" name="content"></textarea><br>
+                <button type="submit">Отправить отклик</button>
+            </form>
+        {% endif %}
 
-    <!-- Отображение откликов -->
-<h3>Отклики</h3>
-{% for response in responses %}
-  <div>
-    <p>Автор: {{ response.author }}</p>
-    <p>Время создания: {{ response.data_creation }}</p>
-    <p>Текст: {{ response.content }}</p>
-<hr>
-    {% if post.author == request.user %}
-      {% if not response.status %}
-        <form method="post" action="{% url 'accept_response' response.id %}">
-          {% csrf_token %}
-          <button type="submit">Принять отклик</button>
-        </form>
-          <hr>
-      {% endif %}
+        <hr>
     {% endif %}
-  </div>
-{% empty %}
-  <p>Нет откликов</p>
-{% endfor %}
+    <!-- Отображение откликов -->
+    <h3>Отклики</h3>
+    {% for response in responses %}
+        <div>
+            <p>Автор: {{ response.author }}</p>
+            <p>Время создания: {{ response.data_creation|date:'d.m.Y' }}</p>
+            <p>Текст: {{ response.content }}</p>
+            {% if response.status %}
+                <p style="color: green"><b>Отклик принят</b></p>
+            {% else %}
+                <p style="color: red"><b>Отклик не принят</b></p>
+            {% endif %}
+            <hr>
+            {% if post.author == request.user %}
+                {% if not response.status %}
+                    <form method="post" action="{% url 'accept_response' response.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Принять отклик</button>
+                    </form>
+                    <hr>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Нет откликов</p>
+    {% endfor %}
 
 {% endblock content %}

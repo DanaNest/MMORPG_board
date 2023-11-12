@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from accounts.forms import register
-from accounts.views import confirm_registration, view_responses
+from accounts.views import confirm_registration
 from board import views
 
 urlpatterns = [
@@ -31,7 +31,8 @@ urlpatterns = [
     path('accounts/signup/', register, name='register'),
     path('accounts/register/', confirm_registration, name='activation'),
     path('accounts/', include('allauth.urls')),
-    path('responses/<int:user_id>/', view_responses, name='view_responses'),
+
+    #path('responses/<int:user_id>/', view_responses, name='view_responses'),
 
     path('', include('board.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Подтверждение регистрации</title>
-</head>
-<body>
+{% extends 'flatpages/default.html' %}
+{% block content %}
     <h1>Подтверждение регистрации</h1>
     <form method="post">
         {% csrf_token %}
@@ -11,5 +7,4 @@
         <input type="text" id="confirmation_code" name="confirmation_code">
         <button type="submit">Подтвердить</button>
     </form>
-</body>
-</html>
+{% endblock %}
