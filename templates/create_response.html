@@ -4,7 +4,6 @@
 {% endblock title %}
 {% block content %}
  <h1>Отклик</h1>
-<p>post.id: {{ post.id }}</p>
 <form method="post" action="{% url 'create_response' post_id=post.id %}">
   {% csrf_token %}
   <label for="content">Текст отклика:</label>

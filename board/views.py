@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.decorators import login_required
+from django.core.checks import messages
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
@@ -105,12 +106,27 @@ def create_response(request, post_id):
 @login_required
 def accept_response(request, response_id):
     response = get_object_or_404(Response, id=response_id)
-    response.status = True
+    response.status = 'accepted'
     response.save()
 
     # отправляем уведомление на почту
     subject = 'Ваш отклик принят'
     message = f'Ваш отклик на объявление "{response.post.title}" принят'
+    from_email = DEFAULT_FROM_EMAIL
+    to_email = response.author.email
+    send_mail(subject, message, from_email, [to_email])
+
+    return redirect('post', post_id=response.post.id)
+
+@login_required
+def reject_response(request, response_id):
+    response = get_object_or_404(Response, id=response_id)
+    response.status = 'rejected'
+    response.save()
+
+    # отправляем уведомление на почту
+    subject = 'Ваш отклик отклонен'
+    message = f'Ваш отклик на объявление "{response.post.title}" отклонен'
     from_email = DEFAULT_FROM_EMAIL
     to_email = response.author.email
     send_mail(subject, message, from_email, [to_email])

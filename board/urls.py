@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 
 from MMORPG import settings
 from board import views
-from board.views import PostList, PostDetail, create_response, accept_response, private_page
+from board.views import PostList, PostDetail, create_response, accept_response, private_page, reject_response
 
 urlpatterns = [
     path('', PostList.as_view(), name='index'),
@@ -15,4 +15,5 @@ urlpatterns = [
     path('posts/delete/<int:post_id>/', views.delete_post, name='delete_post'),
     path('posts/response/<int:post_id>/', create_response, name='create_response'),
     path('responses/<int:response_id>/accept/', accept_response, name='accept_response'),
+    path('responses/<int:response_id>/reject/', reject_response, name='reject_response'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

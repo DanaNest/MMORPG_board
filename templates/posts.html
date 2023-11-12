@@ -25,8 +25,7 @@
                 <tr>
                     <td style="border: 1px solid maroon; text-align: left; padding: 10px">{{ post.data_creation|date:'d.m.Y' }}<br>Автор: {{ post.author }}
                     </td>
-                    <td style="border: 1px solid maroon; padding: 10px"><a
-                            href="{% url 'post' post.id %}">{{ post.title }}</a></td>
+                    <td style="border: 1px solid maroon; padding: 10px"><a href="{% url 'post' post.id %}">{{ post.title }}</a></td>
                     <td style="border: 1px solid maroon; text-align: left; padding: 10px">{{ post.get_category_display }}</td>
                     <td style="border: 1px solid maroon; text-align: left; padding: 10px">{{ post.content }}</td>
                     <td>

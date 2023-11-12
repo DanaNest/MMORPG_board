@@ -1,27 +1,55 @@
 {% extends 'flatpages/default.html' %}
 {% block content %}
     <h2>Приватная страница</h2>
+    <a href="/">Объявления</a>
     <form method="GET" action="{% url 'private_page' %}">
         <label for="post_id">Выберите объявление:</label>
         <select name="post_id" id="post_id">
             <option value="">Все объявления</option>
             {% for post in posts %}
-                <option value="{{ post.id }}" {% if post.id == request.GET.post_id %}selected{% endif %}>{{ post.title }}</option>
-
+                <option value="{{ post.id }}"
+                        {% if post.id == request.GET.post_id %}selected{% endif %}>{{ post.title }}</option>
+                <p><b>Объявление: {{ response.post.title }}</b></p>
             {% endfor %}
-        {{ post.content }}
+
         </select>
         <button type="submit">Применить</button>
     </form>
     <hr>
     {% for response in responses %}
+
         <div>
-            <p>Объявление: {{ response.post.title }}</p>
-            <p>Автор: {{ response.author }}</p>
-            <p>Время создания: {{ response.data_creation|date:'d.m.Y' }}</p>
+            <p><b>Объявление: {{ response.post.title }}</b></p>
+            <p>Автор: {{ response.author }} | Время создания: {{ response.data_creation|date:'d.m.Y' }}</p>
             <p>Текст: {{ response.content }}</p>
         </div>
+
+
+        {% if response.status == 'accepted' %}
+            <p style="color: green"><b>Отклик принят</b></p>
+        {% elif response.status == 'rejected' %}
+            <p style="color: red"><b>Ваш отклик был отклонен</b></p>
+        {% elif response.status == 'undefined' %}
+            <p style="color: orange"><b>Отклик необработан</b></p>
+        {% endif %}
         <hr>
+
+        {% if response.status == 'undefined' %}
+<div style="display: flex; gap: 10px; justify-content: center;">
+    <form method="post" action="{% url 'accept_response' response.id %}">
+        {% csrf_token %}
+        <button type="submit">Принять отклик</button>
+    </form>
+    <form method="post" action="{% url 'reject_response' response.id %}">
+        {% csrf_token %}
+        <button type="submit">Отклонить отклик</button>
+    </form>
+</div>
+            <hr>
+        {% endif %}
+
+
+
     {% empty %}
         <p>Нет откликов на объявления пользователя {{ user.username }}.</p>
     {% endfor %}

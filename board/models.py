@@ -33,10 +33,15 @@ class Post(models.Model):
 
 
 class Response(models.Model):
+    STATUS_CHOICES = (
+        ('undefined', 'Неопределенный'),
+        ('accepted', 'Принят'),
+        ('rejected', 'Отклонен'),
+    )
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='replies', verbose_name='Пост')
     data_creation = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     content = models.TextField(verbose_name='Текст')
-    status = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='undefined')
 
 
