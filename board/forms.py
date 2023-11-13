@@ -1,4 +1,3 @@
-from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
@@ -6,8 +5,7 @@ from django.forms import ModelForm
 from .models import Post, Response
 
 
-class PostForm(ModelForm):
-
+class PostForm(ModelForm):      # форма для создания поста
     class Meta:
         model = Post
         fields = [
@@ -32,5 +30,3 @@ class ResponseForm(forms.ModelForm):
         model = Response
         fields = ['content']
         labels = {'content': 'Содержимое отклика'}
-
-

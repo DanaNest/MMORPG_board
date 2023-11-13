@@ -31,7 +31,7 @@
             <form method="post" action="{% url 'create_response' post_id=post.id %}">
                 {% csrf_token %}
                 <label for="content">Текст отклика:</label><br>
-                <textarea id="content" name="content"></textarea><br>
+                <textarea cols="35" rows="3" id="content" name="content"></textarea><br>
                 <button type="submit">Отправить отклик</button>
             </form>
         {% endif %}

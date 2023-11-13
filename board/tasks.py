@@ -10,7 +10,6 @@ import datetime
 from celery import shared_task
 
 
-
 @shared_task
 def weekly_news():
     today = datetime.datetime.now()
@@ -24,6 +23,7 @@ def weekly_news():
         }
     )
     recipients = User.objects.values_list('email', flat=True)
+    # каждому пользователю отдельно отправляем письмо
     for recipient in recipients:
         msg = EmailMultiAlternatives(
             subject=f'Новые объявления за неделю',

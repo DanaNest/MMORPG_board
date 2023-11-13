@@ -43,7 +43,7 @@ class PostDetail(DetailView):  # детали объявления
 
 
 @login_required
-def profile(request):
+def profile(request):       # профиль
     # Получаем объявления пользователя
     posts = Post.objects.filter(author=request.user)
 
@@ -91,7 +91,7 @@ def delete_post(request, post_id):  # удалить объявление
 
 
 @login_required
-def create_response(request, post_id):
+def create_response(request, post_id):          # создание отклика
     post = get_object_or_404(Post, id=post_id)
 
     if request.method == 'POST':
@@ -112,9 +112,8 @@ def create_response(request, post_id):
 
 
 @login_required
-def response_status(request, response_id, action):
+def response_status(request, response_id, action):      # принять или отклонить отклик
     response = get_object_or_404(Response, id=response_id)
-
     if action == 'accept':
         response.status = 'accepted'
         subject = 'Ваш отклик принят'
