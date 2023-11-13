@@ -10,7 +10,7 @@
     <h3>Всего объявлений - {{ page_obj.paginator.count }}</h3>
     <hr>
     <!-- Выводим посты, только если они есть с помощью тега if -->
-    {% if posts %}
+    {% if posts_profile %}
         <table style="border: 2px solid white">
             <tr>
                 <td style="border: 1px solid maroon">Дата создания/автор</td>
@@ -21,7 +21,7 @@
                     <td style="border: 1px solid maroon">Детали</td>
                 {% endif %}
             </tr>
-            {% for post in posts %}
+            {% for post in posts_profile %}
                 <tr>
                     <td style="border: 1px solid maroon; text-align: left; padding: 10px">{{ post.data_creation|date:'d.m.Y' }}<br>Автор: {{ post.author }}
                     </td>
@@ -46,5 +46,5 @@
         <h2>Пусто!!!</h2>
     {% endif %}
     <!--Добавляем пагинацию-->
-    {% include 'paginator.html' %}
+    {% include 'posts/paginator.html' %}
 {% endblock content %}

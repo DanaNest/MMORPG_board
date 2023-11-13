@@ -14,23 +14,30 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from ckeditor_uploader.views import upload, browse
 from django.contrib import admin
-from django.urls import path, include
+from django.contrib.auth.decorators import login_required
+from django.template.defaulttags import url
+from django.urls import path, include, re_path
 
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.decorators.cache import never_cache
 
 from accounts.forms import register
 from accounts.views import confirm_registration
 from board import views
+from board.views import profile
 
 urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('accounts/signup/', register, name='register'),
-    path('accounts/register/', confirm_registration, name='activation'),
-    path('private/', views.private_page, name='private_page'),
+    path('accounts/register/', confirm_registration, name='confirm'),
+    path('profile/', profile, name='profile'),
     path('accounts/', include('allauth.urls')),
     path('', include('board.urls')),
+    re_path(r'^upload/', login_required(upload), name='ckeditor_upload'),
+    re_path(r'^browse/', login_required(never_cache(browse)), name='ckeditor_browse'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

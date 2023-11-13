@@ -1,28 +1,36 @@
-from django import forms
 from django.contrib.auth.decorators import login_required
-from django.core.checks import messages
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseBadRequest, request
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import ListView, DetailView
-from requests import post
 
 from MMORPG.settings import DEFAULT_FROM_EMAIL
-from .forms import PostForm, ResponseForm
+from .forms import PostForm
 from .models import Post, Response
 
 
 class PostList(ListView):  # список объявлений
     model = Post
-    template_name = 'posts.html'
+    template_name = 'posts/posts.html'
     context_object_name = 'posts'
     ordering = '-data_creation'
     paginate_by = 10  # вывод 10 записей на страницу
 
 
+class PostListProfile(ListView):  # список объявлений
+    model = Post
+    template_name = 'profile/posts_profile.html'
+    context_object_name = 'posts_profile'
+    ordering = '-data_creation'
+    paginate_by = 10  # вывод 10 записей на страницу
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user)
+
+
 class PostDetail(DetailView):  # детали объявления
     model = Post
-    template_name = 'post.html'
+    template_name = 'posts/post.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
 
@@ -35,7 +43,7 @@ class PostDetail(DetailView):  # детали объявления
 
 
 @login_required
-def private_page(request):
+def profile(request):
     # Получаем объявления пользователя
     posts = Post.objects.filter(author=request.user)
 
@@ -47,7 +55,7 @@ def private_page(request):
     if selected_post_id:
         responses = responses.filter(post_id=selected_post_id)
 
-    return render(request, 'profile.html', {'posts': posts, 'responses': responses})
+    return render(request, 'profile/profile_response.html', {'posts': posts, 'responses': responses})
 
 
 def add_post(request):  # создать объявление
@@ -57,10 +65,10 @@ def add_post(request):  # создать объявление
             post_item = form.save(commit=False)
             post_item.request = request
             post_item.save()
-            return redirect('posts')
+            return redirect('posts_profile')
     else:
         form = PostForm()
-    return render(request, 'post_form.html', {'form': form})
+    return render(request, 'posts/post_form.html', {'form': form})
 
 
 def edit_post(request, post_id=None):  # редактировать объявление
@@ -68,8 +76,8 @@ def edit_post(request, post_id=None):  # редактировать объявл
     form = PostForm(request.POST or None, instance=item)
     if form.is_valid():
         form.save()
-        return redirect('posts')
-    return render(request, 'post_form.html', {'form': form})
+        return redirect('posts_profile')
+    return render(request, 'posts/post_form.html', {'form': form})
 
 
 def delete_post(request, post_id):  # удалить объявление
@@ -77,9 +85,9 @@ def delete_post(request, post_id):  # удалить объявление
 
     if request.method == 'POST':
         post.delete()
-        return redirect('posts')
+        return redirect('posts_profile')
 
-    return render(request, 'confirm_delete.html', {'post': post})
+    return render(request, 'posts/post_delete.html', {'post': post})
 
 
 @login_required
@@ -104,29 +112,24 @@ def create_response(request, post_id):
 
 
 @login_required
-def accept_response(request, response_id):
+def response_status(request, response_id, action):
     response = get_object_or_404(Response, id=response_id)
-    response.status = 'accepted'
+
+    if action == 'accept':
+        response.status = 'accepted'
+        subject = 'Ваш отклик принят'
+        message = f'Ваш отклик на объявление "{response.post.title}" принят'
+    elif action == 'reject':
+        response.status = 'rejected'
+        subject = 'Ваш отклик отклонен'
+        message = f'Ваш отклик на объявление "{response.post.title}" отклонен'
+    else:
+        # Обработка неверного действия
+        return HttpResponseBadRequest('Неверное действие')
+
     response.save()
 
     # отправляем уведомление на почту
-    subject = 'Ваш отклик принят'
-    message = f'Ваш отклик на объявление "{response.post.title}" принят'
-    from_email = DEFAULT_FROM_EMAIL
-    to_email = response.author.email
-    send_mail(subject, message, from_email, [to_email])
-
-    return redirect('post', post_id=response.post.id)
-
-@login_required
-def reject_response(request, response_id):
-    response = get_object_or_404(Response, id=response_id)
-    response.status = 'rejected'
-    response.save()
-
-    # отправляем уведомление на почту
-    subject = 'Ваш отклик отклонен'
-    message = f'Ваш отклик на объявление "{response.post.title}" отклонен'
     from_email = DEFAULT_FROM_EMAIL
     to_email = response.author.email
     send_mail(subject, message, from_email, [to_email])

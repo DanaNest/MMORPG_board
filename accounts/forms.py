@@ -30,7 +30,7 @@ def register(request):  # Регистрация
             # Отправляем код подтверждения по электронной почте
             send_confirmation_email(user.email, confirmation_code)
 
-            return redirect('activation')
+            return redirect('confirm')
     else:
         form = RegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
