@@ -17,6 +17,7 @@
         <button type="submit">Применить</button>
     </form>
     <hr>
+
     {% for response in responses %}
         {% if response.status != 'rejected' %}
 
@@ -25,9 +26,6 @@
             <p>{{ response.data_creation|date:'d.m.Y' }} | <i>{{ response.author }}</i></p>
             <p>{{ response.content }}</p>
         </div>
-
-
-
         {% if response.status == 'accepted' %}
             <p style="color: green"><b>Отклик принят</b></p>
         {% elif response.status == 'rejected' %}

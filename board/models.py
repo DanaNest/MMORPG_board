@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.urls import reverse
 
 
 class Post(models.Model):
@@ -22,6 +23,9 @@ class Post(models.Model):
     title = models.CharField(max_length=256, verbose_name='Название')
     content = RichTextUploadingField(config_name='special', verbose_name='Текст', null=True)
     data_creation = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
+
+    def get_absolute_url(self):
+        return reverse('post', args=[str(self.id)])
 
     def __str__(self):
         return self.title
